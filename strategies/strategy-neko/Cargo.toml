@@ -1,0 +1,24 @@
+[package]
+name        = "strategy-neko"
+description = "DeFindex strategy — connects DeFindex vaults to Neko's pools"
+version.workspace     = true
+authors.workspace     = true
+license.workspace     = true
+edition.workspace     = true
+repository.workspace  = true
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+doctest    = false
+
+[dependencies]
+soroban-sdk            = { workspace = true }
+defindex-strategy-core = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+
+[package.metadata.stellar]
+contract      = true
+cargo_inherit = true

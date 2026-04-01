@@ -1,6 +1,6 @@
 [package]
-name        = "strategy-rwa-lending"
-description = "DeFindex strategy — connects DeFindex vaults to Neko rwa-lending pools"
+name        = "strategy-blend"
+description = "DeFindex strategy — Blend V2 lending (Palta-compatible)"
 version.workspace     = true
 authors.workspace     = true
 license.workspace     = true
@@ -13,8 +13,9 @@ crate-type = ["cdylib"]
 doctest    = false
 
 [dependencies]
-soroban-sdk            = { workspace = true }
-defindex-strategy-core = { workspace = true }
+soroban-sdk                = { workspace = true }
+defindex-strategy-core     = { workspace = true }
+soroban-fixed-point-math   = { workspace = true }
 
 [dev-dependencies]
 soroban-sdk = { workspace = true, features = ["testutils"] }

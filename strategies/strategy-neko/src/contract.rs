@@ -37,19 +37,19 @@ use soroban_sdk::{
     Address, Bytes, Env, IntoVal, String, TryIntoVal, Val, Vec,
 };
 
-use crate::rwa_lending;
+use crate::neko_pool;
 use crate::storage::{
     get_b_tokens, is_initialized, load_config, save_config, set_b_tokens, StrategyConfig,
     SCALAR_12,
 };
 
-const STRATEGY_NAME: &str = "RwaLendingStrategy";
+const STRATEGY_NAME: &str = "NekoStrategy";
 
 #[contract]
-pub struct RwaLendingStrategy;
+pub struct NekoStrategy;
 
 #[contractimpl]
-impl RwaLendingStrategy {
+impl NekoStrategy {
     // ═══════════════════════════════════════════════════════════════════════
     // Constructor
     // ═══════════════════════════════════════════════════════════════════════
@@ -125,7 +125,7 @@ impl RwaLendingStrategy {
             }),
         ]);
 
-        let lending = rwa_lending::Client::new(&env, &config.lending_pool);
+        let lending = neko_pool::Client::new(&env, &config.lending_pool);
         let b_tokens_minted = lending.deposit(&strategy_addr, &config.rwa_asset, &amount);
 
         // Attribute the minted b_tokens to this vault.
@@ -158,7 +158,7 @@ impl RwaLendingStrategy {
 
         let config = load_config(&env);
         let strategy_addr = env.current_contract_address();
-        let lending = rwa_lending::Client::new(&env, &config.lending_pool);
+        let lending = neko_pool::Client::new(&env, &config.lending_pool);
 
         let b_rate = lending.get_b_token_rate(&config.rwa_asset);
         if b_rate == 0 {
@@ -247,7 +247,7 @@ impl RwaLendingStrategy {
     /// The `data` parameter is unused (no swap params needed).
     pub fn harvest(env: Env, from: Address, _data: Option<Bytes>) -> Result<(), StrategyError> {
         let config = load_config(&env);
-        let lending = rwa_lending::Client::new(&env, &config.lending_pool);
+        let lending = neko_pool::Client::new(&env, &config.lending_pool);
 
         // b_rate starts at SCALAR_12 (1.0) and grows as interest accrues.
         // Using it as price_per_share lets DeFindex compute APY from b_rate growth rate.
@@ -272,7 +272,7 @@ fn underlying_balance(env: &Env, vault: &Address, config: &StrategyConfig) -> i1
     if b_tokens == 0 {
         return 0;
     }
-    let lending = rwa_lending::Client::new(env, &config.lending_pool);
+    let lending = neko_pool::Client::new(env, &config.lending_pool);
     let b_rate = lending.get_b_token_rate(&config.rwa_asset);
     b_tokens
         .checked_mul(b_rate)
